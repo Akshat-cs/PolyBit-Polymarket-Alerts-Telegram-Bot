@@ -858,15 +858,18 @@ def fmt_market_detail(
     else:
         lines.append("💵 <b>Current Prices:</b> no trades yet")
 
-    if stats and (stats.volume_usd is not None or stats.unique_buyers is not None or stats.trade_count is not None):
-        lines.append("")
-        lines.append(f"📊 <b>{_window_label()} Stats:</b>")
-        if stats.volume_usd is not None:
-            lines.append(f"  Volume: <code>{fmt_usd(stats.volume_usd)}</code>")
-        if stats.unique_buyers is not None:
-            lines.append(f"  Unique Traders: <code>{fmt_int(stats.unique_buyers)}</code>")
-        if stats.trade_count is not None:
-            lines.append(f"  Trades: <code>{fmt_int(stats.trade_count)}</code>")
+    # Always render the recent-activity block so quiet markets read as "0"
+    # rather than the section silently disappearing — gives the user a clear
+    # signal there's been no action vs. data simply being unavailable. Same
+    # behavior as the alert detail card.
+    vol = stats.volume_usd if stats and stats.volume_usd is not None else 0.0
+    traders = stats.unique_buyers if stats and stats.unique_buyers is not None else 0
+    trades = stats.trade_count if stats and stats.trade_count is not None else 0
+    lines.append("")
+    lines.append(f"📊 <b>{_window_label()} Stats:</b>")
+    lines.append(f"  Volume: <code>{fmt_usd(vol)}</code>")
+    lines.append(f"  Unique Traders: <code>{fmt_int(traders)}</code>")
+    lines.append(f"  Trades: <code>{fmt_int(trades)}</code>")
 
     url = polymarket_event_url(market_id, title, canonical_url)
     lines.append("")
@@ -1042,9 +1045,10 @@ def fmt_alert_detail(alert: Alert, market_data: dict | None = None) -> str:
                 f'👤 <a href="{html.escape(profile, quote=True)}">View Trader profile on Polymarket</a>'
             )
 
-    if alert.market_key and market_data:
-        prices = market_data.get("prices") or []
-        stats = market_data.get("stats") or {}
+    if alert.market_key:
+        md = market_data or {}
+        prices = md.get("prices") or []
+        stats = md.get("stats") or {}
         if prices:
             lines.append("")
             lines.append("💵 <b>Current Prices:</b>")
@@ -1055,9 +1059,10 @@ def fmt_alert_detail(alert: Alert, market_data: dict | None = None) -> str:
                     f"  {dot} <b>{label_text}:</b> "
                     f"<code>{fmt_price_cents(getattr(p, 'price', None))}</code>"
                 )
-        # Always show the recent-activity line for bound alerts so quiet
-        # markets read as "0" instead of disappearing — gives users a clear
-        # signal there's been no action vs. data simply being unavailable.
+        # Always render the recent-activity line for bound alerts so quiet
+        # markets read as "0" instead of the section disappearing — gives
+        # users a clear signal there's been no action vs. data simply being
+        # unavailable. Same defaulting as `fmt_market_detail`.
         vol = stats.get("volume_usd") or 0.0
         traders = stats.get("unique_buyers") or 0
         trades = stats.get("trade_count") or 0

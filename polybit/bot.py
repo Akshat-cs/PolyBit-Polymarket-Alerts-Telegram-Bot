@@ -387,14 +387,19 @@ async def show_market_detail(
     stats_obj = cached
     if stats_obj is None or stats_obj.volume_usd is None or refresh:
         stats = await deps.bq.fetch_recent_stats(market_id)
-        if stats:
-            if stats_obj is None:
-                from .bitquery import MarketRow
-                stats_obj = MarketRow(market_id=market_id, title=title or "")
-                deps.market_index[market_id] = stats_obj
-            stats_obj.volume_usd = stats.get("volume_usd", stats_obj.volume_usd)
-            stats_obj.trade_count = stats.get("trade_count", stats_obj.trade_count)
-            stats_obj.unique_buyers = stats.get("unique_buyers", stats_obj.unique_buyers)
+        if stats_obj is None:
+            from .bitquery import MarketRow
+            stats_obj = MarketRow(market_id=market_id, title=title or "")
+            deps.market_index[market_id] = stats_obj
+        # Even when `stats` is an empty dict (quiet market: no trades in the
+        # lookback window) we still want the formatter to render a zeroed
+        # 1h Stats block, so always populate the row with explicit zeros and
+        # let any non-empty values overwrite. Previously a {} return here
+        # caused the whole stats section to silently disappear from the
+        # deep-link / freshly-opened market detail card.
+        stats_obj.volume_usd = (stats or {}).get("volume_usd", stats_obj.volume_usd) or 0.0
+        stats_obj.trade_count = (stats or {}).get("trade_count", stats_obj.trade_count) or 0
+        stats_obj.unique_buyers = (stats or {}).get("unique_buyers", stats_obj.unique_buyers) or 0
 
     if stats_obj is not None:
         if prices:
@@ -610,8 +615,17 @@ async def show_alert_detail(
 
 async def _alert_market_data(deps: BotDeps, alert: Alert) -> dict | None:
     """Fetch current prices, 1h stats, image and canonical URL for an alert's
-    bound market. Returns None when the alert isn't bound to a market or when
-    every fetch fails - the renderer then degrades gracefully to text-only."""
+    bound market.
+
+    Returns:
+      None — only when the alert isn't bound to a market (no market to
+        fetch state for; the formatter shows "Market: any").
+      dict — for any bound alert, even if every individual fetch failed.
+        Empty/missing fields default to falsy values so the formatter can
+        render zeros instead of dropping the whole "Current Prices / 1h
+        Stats" section. The renderer relies on this dict always existing
+        for bound alerts.
+    """
     if not alert.market_key:
         return None
     market_id = alert.market_key
@@ -674,8 +688,6 @@ async def _alert_market_data(deps: BotDeps, alert: Alert) -> dict | None:
         if canonical and not cached.canonical_url:
             cached.canonical_url = canonical
 
-    if title is None and image is None and not prices and not stats:
-        return None
     return {
         "title": title or alert.market_title,
         "image": image,
