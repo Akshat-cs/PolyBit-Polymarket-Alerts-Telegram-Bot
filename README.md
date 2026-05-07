@@ -1,5 +1,18 @@
 # PolyBit — Polymarket Telegram Alerts Bot
 
+<p align="center">
+  <a href="https://t.me/PolyBit_Polymarket_Bot">
+    <img src="https://img.shields.io/badge/Add%20PolyBit%20on%20Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Add PolyBit on Telegram" height="44">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+"></a>
+  <a href="https://github.com/python-telegram-bot/python-telegram-bot"><img src="https://img.shields.io/badge/python--telegram--bot-v21-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="python-telegram-bot v21"></a>
+  <a href="https://docs.bitquery.io/docs/examples/prediction-market/prediction-market-api/"><img src="https://img.shields.io/badge/data-Bitquery-FF6B35?style=flat-square" alt="Powered by Bitquery"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License"></a>
+</p>
+
 A Telegram bot that streams Polymarket prediction-market data via the
 [Bitquery Prediction Market API](https://docs.bitquery.io/docs/examples/prediction-market/prediction-market-api/)
 and lets users:
