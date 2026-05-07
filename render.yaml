@@ -1,0 +1,31 @@
+# Render Blueprint for PolyBit.
+#
+# This file lets Render auto-configure the service when you click
+# "New > Blueprint" in the dashboard and point it at this repo. You can
+# also configure the service manually via the dashboard (see DEPLOY.md);
+# this Blueprint just makes the setup reproducible and version-controlled.
+#
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: worker
+    name: polybit
+    runtime: python
+    plan: starter            # $7/mo, smallest paid worker
+    region: oregon           # change to nearest region if you prefer
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m polybit
+    envVars:
+      - key: BITQUERY_TOKEN
+        sync: false          # set in Render dashboard, not in repo
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: POLYBIT_LOG_LEVEL
+        value: INFO
+      - key: POLYBIT_DATA_DIR
+        value: /var/data     # MUST match disk.mountPath below
+    disk:
+      name: polybit-data
+      mountPath: /var/data
+      sizeGB: 1              # 1 GB minimum on Render = $0.25/mo
