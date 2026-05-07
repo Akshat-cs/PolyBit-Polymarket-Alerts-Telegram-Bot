@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="56" viewBox="0 0 300 56" role="img" aria-label="Add PolyBit on Telegram">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#37AEE2"/>
+      <stop offset="100%" stop-color="#1E96C8"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="300" height="56" rx="28" ry="28" fill="url(#bg)" filter="url(#shadow)"/>
+  <g transform="translate(20, 14)">
+    <circle cx="14" cy="14" r="14" fill="#ffffff" fill-opacity="0.15"/>
+    <path fill="#ffffff" d="M20.94 9.69l-2.32 10.94c-.18.78-.64.97-1.31.61l-3.61-2.66-1.74 1.68c-.19.19-.36.36-.73.36l.26-3.7 6.74-6.09c.29-.26-.06-.41-.46-.15L9.34 14.92l-3.6-1.13c-.78-.24-.79-.78.16-1.16l14.05-5.42c.65-.24 1.22.15.99 1.48z"/>
+  </g>
+  <text x="60" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" letter-spacing="0.3">Add PolyBit on Telegram</text>
+</svg>

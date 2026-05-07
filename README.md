@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://t.me/PolyBit_Polymarket_Bot">
-    <img src="https://img.shields.io/badge/Add%20PolyBit%20on%20Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Add PolyBit on Telegram" height="44">
+    <img src="./assets/add-on-telegram.svg" alt="Add PolyBit on Telegram" height="48">
   </a>
 </p>
 
